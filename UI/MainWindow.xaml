@@ -1,0 +1,65 @@
+﻿<Window x:Class="AI_func_min.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="FuncMin" Height="330" Width="300">
+    <StackPanel Margin="10">
+        <TextBlock FontSize="20">100(x₂ - x₁²)² + (1 - x₁)²</TextBlock>
+        <Grid Margin="0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="X₁ range" FontSize="15"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="X₂ range" FontSize="15"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Population" FontSize="15"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Generations" FontSize="15"/>
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Mutation strength" FontSize="15"/>
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Mutation curve" FontSize="15"/>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                <TextBox x:Name="X1Min" Text="-500" Width="50" FontSize="15"/>
+                <TextBox x:Name="X1Max" Text="500" Width="50" FontSize="15"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <TextBox x:Name="X2Min" Text="-500" Width="50" FontSize="15"/>
+                <TextBox x:Name="X2Max" Text="500" Width="50" FontSize="15"/>
+            </StackPanel>
+            <TextBox Grid.Row="2" Grid.Column="1"
+                     x:Name="Population"
+                     Text="20" FontSize="15"
+                     PreviewTextInput="OnIntParameterChanged" 
+                     CommandManager.PreviewExecuted="CommandManager_OnPreviewExecuted"
+                     ContextMenu="{x:Null}"/>
+            <TextBox Grid.Row="3" Grid.Column="1"
+                     x:Name="Generations"
+                     Text="10000" FontSize="15"
+                     PreviewTextInput="OnIntParameterChanged" 
+                     CommandManager.PreviewExecuted="CommandManager_OnPreviewExecuted"
+                     ContextMenu="{x:Null}"/>
+            <TextBox Grid.Row="4" Grid.Column="1"
+                     x:Name="MutationStrength"
+                     Text="0,5" FontSize="15"
+                     PreviewTextInput="OnFloatParameterChanged" 
+                     CommandManager.PreviewExecuted="CommandManager_OnPreviewExecuted"
+                     ContextMenu="{x:Null}"/>
+            <TextBox Grid.Row="5" Grid.Column="1"
+                     x:Name="MutationCurve" 
+                     Text="3" FontSize="15"
+                     PreviewTextInput="OnFloatParameterChanged" 
+                     CommandManager.PreviewExecuted="CommandManager_OnPreviewExecuted"
+                     ContextMenu="{x:Null}"/>
+        </Grid>
+        <Button Content="Find Minimum" FontSize="15" Click="FindMinimum"/>
+        <TextBlock x:Name="Result" FontSize="15" Margin="0,10"/>
+    </StackPanel>
+</Window>
