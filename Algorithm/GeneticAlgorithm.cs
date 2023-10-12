@@ -41,14 +41,14 @@ public class GeneticAlgorithm
         CreateFirstGeneration();
         for (var g = 0; g < _params.Generations; g++)
         {
-            foreach (var parent in _entities)
+            for (int  parent = 0; parent < _entities.Length; parent++)
             {
-                var secondParent = SelectSecondParent(parent);
+                var secondParent = SelectSecondParent(_entities[parent]);
                 var mutation = float.Pow(
                     _params.MutationStrength * (_params.Generations - g) / _params.Generations,
                     _params.MutationCurve);
-                var child = MakeChild(parent, _entities[secondParent], mutation);
-                if (Calculate(child) < Calculate(parent)) ReplaceParent(secondParent, child);
+                var child = MakeChild(_entities[parent], _entities[parent], mutation);
+                if (Calculate(child) < Calculate(_entities[parent])) ReplaceParent(parent, child);
             }
         }
         return _bestSolution;
@@ -58,7 +58,7 @@ public class GeneticAlgorithm
     {
         for (var e = 0; e < _entities.Length; e++)
         {
-            _entities[e] = new Solution(RandomX1(), RandomX1());
+            _entities[e] = new Solution(RandomX1(), RandomX2());
             UpdateBestSolution(_entities[e]);
         }
     }
@@ -69,6 +69,7 @@ public class GeneticAlgorithm
         UpdateBestSolution(child);
     }
 
+    
     private int SelectSecondParent(Solution firstParent)
     {
         var chances = new List<float>(_params.Population);
