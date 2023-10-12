@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AI_func_min.Algorithm;
@@ -11,8 +12,10 @@ namespace AI_func_min.UI
     /// </summary>
     public partial class MainWindow
     {
-        private readonly IMathExpression _expression = new ExpressionA();
-        
+        private IMathExpression _expression = new ExpressionA();
+
+        //  private readonly IMathExpression _expression = new ExpressionA();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,6 +50,22 @@ namespace AI_func_min.UI
         {
             var textBox = (sender as TextBox)!;
             e.Handled = !int.TryParse(textBox.Text + e.Text, out _);
+        }
+
+        private void OnFunctionSelected(object? sender, EventArgs eventArgs)
+        {
+            switch (Functions.SelectedIndex) //????
+            {
+                case 0:
+                    _expression = new ExpressionA();
+                    break;
+                case 1:
+                    _expression = new ExpressionB();
+                    break;
+                case 2:
+                    _expression = new ExpressionC();
+                    break;
+            }
         }
 
         private void CommandManager_OnPreviewExecuted(object sender, ExecutedRoutedEventArgs e)
