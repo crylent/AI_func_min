@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using AI_func_min.Expression;
 
 namespace AI_func_min.Algorithm;
 
-public class GeneticAlgorithm
+public abstract class GeneticAlgorithm<T> where T: INumber<T>
 {
     private readonly IMathExpression _expression;
 
     public class Parameters
     {
-        public float X1Min = -5;
-        public float X1Max = 5;
-        public float X2Min = -5;
-        public float X2Max = 5;
+        public T X1Min = default!;
+        public T X1Max = default!;
+        public T X2Min = default!;
+        public T X2Max = default!;
 
         public int Population = 50;
         public int Generations = 2000;
@@ -23,60 +24,69 @@ public class GeneticAlgorithm
         public float MutationCurve = 3f;
     }
 
-    private readonly Parameters _params;
+    protected readonly Parameters Params;
 
-    public GeneticAlgorithm(IMathExpression expression, Parameters @params)
+    private readonly Solution<T>[] _entities;
+    protected float Min;
+    private Solution<T> _bestSolution = null!;
+
+    protected GeneticAlgorithm(IMathExpression expression, Parameters @params)
     {
         _expression = expression;
-        _params = @params;
-        _entities = new Solution[_params.Population];
+        Params = @params;
+        _entities = new Solution<T>[Params.Population];
     }
 
-    private readonly Solution[] _entities;
-    private float _min = float.MaxValue;
-    private Solution _bestSolution;
-
-    public Solution Optimize()
+    public Solution<T> Optimize()
     {
         CreateFirstGeneration();
-        for (var g = 0; g < _params.Generations; g++)
+        for (var g = 0; g < Params.Generations; g++)
         {
-            for (int  parent = 0; parent < _entities.Length; parent++)
+            for (var parent = 0; parent < _entities.Length; parent++)
             {
                 var secondParent = SelectSecondParent(_entities[parent]);
                 var mutation = float.Pow(
-                    _params.MutationStrength * (_params.Generations - g) / _params.Generations,
-                    _params.MutationCurve);
-                var child = MakeChild(_entities[parent], _entities[parent], mutation);
+                    Params.MutationStrength * (Params.Generations - g) / Params.Generations,
+                    Params.MutationCurve);
+                var child = MakeChild(_entities[parent], _entities[secondParent], mutation);
                 if (Calculate(child) < Calculate(_entities[parent])) ReplaceParent(parent, child);
             }
         }
         return _bestSolution;
     }
 
+    protected abstract Solution<T> MakeChild(Solution<T> parent, Solution<T> otherParent, float mutation);
+
     private void CreateFirstGeneration()
     {
         for (var e = 0; e < _entities.Length; e++)
         {
-            _entities[e] = new Solution(RandomX1(), RandomX2());
+            _entities[e] = new Solution<T>(RandomX1(), RandomX2());
             UpdateBestSolution(_entities[e]);
         }
     }
 
-    private void ReplaceParent(int parent, Solution child)
+    private void UpdateBestSolution(Solution<T> newSolution)
+    {
+        var result = Calculate(newSolution);
+        if (Min < Calculate(newSolution)) return;
+        Min = result;
+        _bestSolution = newSolution;
+    }
+
+    private void ReplaceParent(int parent, Solution<T> child)
     {
         _entities[parent] = child;
         UpdateBestSolution(child);
     }
 
-    
-    private int SelectSecondParent(Solution firstParent)
+    private int SelectSecondParent(Solution<T> firstParent)
     {
-        var chances = new List<float>(_params.Population);
+        var chances = new List<float>(Params.Population);
         foreach (var other in _entities)
         {
             if (other == firstParent) chances.Add(0);
-            else chances.Add(1f / (Calculate(other) - _min));
+            else chances.Add(1f / float.CreateChecked(Calculate(other) - Min));
         }
         var sum = chances.Sum();
         var rand = Random.Shared.NextSingle() * sum;
@@ -91,29 +101,8 @@ public class GeneticAlgorithm
         return i;
     }
 
-    private Solution MakeChild(Solution parent, Solution otherParent, float mutation)
-    {
-        var child = DoCrossover(parent, otherParent);
-        child.X1 = DoMutation(child.X1, RandomX1(), mutation);
-        child.X2 = DoMutation(child.X2, RandomX2(), mutation);
-        return child;
-    }
+    protected abstract T RandomX1();
+    protected abstract T RandomX2();
 
-    private static Solution DoCrossover(Solution a, Solution b) => new(a.X1, b.X2);
-
-    private float DoMutation(float oldX, float newX, float mutation) => oldX * (1 - mutation) + newX * mutation;
-
-    private void UpdateBestSolution(Solution newSolution)
-    {
-        var result = Calculate(newSolution);
-        if (_min < Calculate(newSolution)) return;
-        _min = result;
-        _bestSolution = newSolution;
-    }
-
-    private float RandomX1() => RandomInRange(_params.X1Min, _params.X1Max);
-    private float RandomX2() => RandomInRange(_params.X2Min, _params.X2Max);
-    private static float RandomInRange(float min, float max) => Random.Shared.NextSingle() * (max - min) + min;
-
-    private float Calculate(Solution solution) => solution.Calculate(_expression);
+    private float Calculate(Solution<T> solution) => solution.Calculate(_expression);
 }

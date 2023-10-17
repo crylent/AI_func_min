@@ -14,8 +14,6 @@ namespace AI_func_min.UI
     {
         private IMathExpression _expression = new ExpressionA();
 
-        //  private readonly IMathExpression _expression = new ExpressionA();
-
         public MainWindow()
         {
             InitializeComponent();
@@ -23,10 +21,18 @@ namespace AI_func_min.UI
 
         private void FindMinimum(object sender, RoutedEventArgs routedEventArgs)
         {
-            var algorithm = new GeneticAlgorithm(_expression, new GeneticAlgorithm.Parameters
+            /*var algorithm = new FloatGeneticAlgorithm(_expression, new FloatGeneticAlgorithm.Parameters
             {
                 X1Min = ParseFloat(X1Min), X1Max = ParseFloat(X1Max),
                 X2Min = ParseFloat(X2Min), X2Max = ParseFloat(X2Max),
+                Population = ParseInt(Population), Generations = ParseInt(Generations),
+                MutationStrength = ParseFloat(MutationStrength),
+                MutationCurve = ParseFloat(MutationCurve)
+            });*/
+            var algorithm = new BinaryGeneticAlgorithm(_expression, new BinaryGeneticAlgorithm.Parameters
+            {
+                X1Min = ParseInt(X1Min), X1Max = ParseInt(X1Max),
+                X2Min = ParseInt(X2Min), X2Max = ParseInt(X2Max),
                 Population = ParseInt(Population), Generations = ParseInt(Generations),
                 MutationStrength = ParseFloat(MutationStrength),
                 MutationCurve = ParseFloat(MutationCurve)
@@ -54,18 +60,13 @@ namespace AI_func_min.UI
 
         private void OnFunctionSelected(object? sender, EventArgs eventArgs)
         {
-            switch (Functions.SelectedIndex) //????
+            _expression = Functions.SelectedIndex switch
             {
-                case 0:
-                    _expression = new ExpressionA();
-                    break;
-                case 1:
-                    _expression = new ExpressionB();
-                    break;
-                case 2:
-                    _expression = new ExpressionC();
-                    break;
-            }
+                0 => new ExpressionA(),
+                1 => new ExpressionB(),
+                2 => new ExpressionC(),
+                _ => _expression
+            };
         }
 
         private void CommandManager_OnPreviewExecuted(object sender, ExecutedRoutedEventArgs e)
