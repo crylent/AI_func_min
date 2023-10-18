@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AI_func_min.Algorithm;
@@ -18,29 +17,42 @@ namespace AI_func_min.UI
         {
             InitializeComponent();
         }
+        
 
-        private void FindMinimum(object sender, RoutedEventArgs routedEventArgs)
+        private void FindMinimum(object? sender, EventArgs eventArgs)
         {
-            /*var algorithm = new FloatGeneticAlgorithm(_expression, new FloatGeneticAlgorithm.Parameters
+              switch (Algorithms.SelectedIndex)
             {
-                X1Min = ParseFloat(X1Min), X1Max = ParseFloat(X1Max),
-                X2Min = ParseFloat(X2Min), X2Max = ParseFloat(X2Max),
-                Population = ParseInt(Population), Generations = ParseInt(Generations),
-                MutationStrength = ParseFloat(MutationStrength),
-                MutationCurve = ParseFloat(MutationCurve)
-            });*/
-            var algorithm = new BinaryGeneticAlgorithm(_expression, new BinaryGeneticAlgorithm.Parameters
-            {
-                X1Min = ParseInt(X1Min), X1Max = ParseInt(X1Max),
-                X2Min = ParseInt(X2Min), X2Max = ParseInt(X2Max),
-                Population = ParseInt(Population), Generations = ParseInt(Generations),
-                MutationStrength = ParseFloat(MutationStrength),
-                MutationCurve = ParseFloat(MutationCurve)
-            });
-            Mouse.OverrideCursor = Cursors.Wait;
-            var r = algorithm.Optimize();
-            Mouse.OverrideCursor = Cursors.Arrow;
-            Result.Text = $"x₁ = {r.X1}\nx₂ = {r.X2}\nmin = {r.Calculate(_expression)}";
+                case 0: 
+                    var algorithm = new FloatGeneticAlgorithm(_expression, new FloatGeneticAlgorithm.Parameters
+                    {
+                        X1Min = ParseFloat(X1Min), X1Max = ParseFloat(X1Max),
+                        X2Min = ParseFloat(X2Min), X2Max = ParseFloat(X2Max),
+                        Population = ParseInt(Population), Generations = ParseInt(Generations),
+                        MutationStrength = ParseFloat(MutationStrength),
+                        MutationCurve = ParseFloat(MutationCurve)
+                    });
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    var r = algorithm.Optimize();
+                    Mouse.OverrideCursor = Cursors.Arrow;
+                    Result.Text = $"x₁ = {r.X1}\nx₂ = {r.X2}\nmin = {r.Calculate(_expression)}";
+                    break;
+                case 1:
+                   var algor = new BinaryGeneticAlgorithm(_expression, new BinaryGeneticAlgorithm.Parameters
+                    {
+                        X1Min = ParseInt(X1Min), X1Max = ParseInt(X1Max),
+                        X2Min = ParseInt(X2Min), X2Max = ParseInt(X2Max),
+                        Population = ParseInt(Population), Generations = ParseInt(Generations),
+                        MutationStrength = ParseFloat(MutationStrength),
+                        MutationCurve = ParseFloat(MutationCurve)
+                    });
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    var rr = algor.Optimize();
+                    Mouse.OverrideCursor = Cursors.Arrow;
+                    Result.Text = $"x₁ = {rr.X1}\nx₂ = {rr.X2}\nmin = {rr.Calculate(_expression)}";
+                    break;
+                
+            }
         }
 
         private static float ParseFloat(TextBox textBox) => float.Parse(textBox.Text);
@@ -68,6 +80,7 @@ namespace AI_func_min.UI
                 _ => _expression
             };
         }
+        
 
         private void CommandManager_OnPreviewExecuted(object sender, ExecutedRoutedEventArgs e)
         {

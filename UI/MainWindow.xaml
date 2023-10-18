@@ -4,14 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="FuncMin" Height="330" Width="300">
+        Title="FuncMin" Height="400" Width="300">
     <StackPanel Margin="10">
-        <ComboBox x:Name="Functions" FontSize="15" DropDownClosed="OnFunctionSelected">
+        <ComboBox x:Name="Functions" FontSize="15" DropDownClosed="OnFunctionSelected" Margin="0,10">
             <ComboBoxItem Content="100(x₂ - x₁²)² + (1 - x₁)²" IsSelected="True" />
             <ComboBoxItem Content="(x₂ - x₁²)² + 100(1 - x₁)²" />
             <ComboBoxItem Content="4(x₁ - 5)² + (x₂ - 6)²" />
         </ComboBox>
-        <Grid Margin="0,10">
+        
+        <ComboBox x:Name="Algorithms" FontSize="15">
+            <ComboBoxItem Content="FloatGeneticAlgorithm" IsSelected="True" />
+            <ComboBoxItem Content="BinaryGeneticAlgorithm" />
+        </ComboBox>
+        <Grid Margin="0,20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
