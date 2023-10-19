@@ -6,7 +6,7 @@ using AI_func_min.Expression;
 
 namespace AI_func_min.Algorithm;
 
-public abstract class GeneticAlgorithm<T> where T: INumber<T>
+public abstract class GeneticAlgorithm<T>: IOptimizationAlgorithm where T: INumber<T>
 {
     private readonly IMathExpression _expression;
 
@@ -37,7 +37,7 @@ public abstract class GeneticAlgorithm<T> where T: INumber<T>
         _entities = new Solution<T>[Params.Population];
     }
 
-    public Solution<T> Optimize()
+    public Solution<float> Optimize()
     {
         CreateFirstGeneration();
         for (var g = 0; g < Params.Generations; g++)
@@ -52,7 +52,7 @@ public abstract class GeneticAlgorithm<T> where T: INumber<T>
                 if (Calculate(child) < Calculate(_entities[parent])) ReplaceParent(parent, child);
             }
         }
-        return _bestSolution;
+        return _bestSolution.Convert<float>();
     }
 
     protected abstract Solution<T> MakeChild(Solution<T> parent, Solution<T> otherParent, float mutation);
