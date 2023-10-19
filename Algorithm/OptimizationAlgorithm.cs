@@ -1,6 +1,21 @@
+using System.Numerics;
+using AI_func_min.Expression;
+
 namespace AI_func_min.Algorithm;
 
-public interface IOptimizationAlgorithm
+public abstract class OptimizationAlgorithm<T>: IOptimizationWrapper where T: INumber<T>
 {
-    Solution<float> Optimize();
+    protected readonly IMathExpression Expression;
+
+    protected OptimizationAlgorithm(IMathExpression expression)
+    {
+        Expression = expression;
+    }
+    
+    public abstract Solution<float> Optimize();
+
+    protected abstract T RandomX1();
+    protected abstract T RandomX2();
+
+    protected float Calculate(Solution<T> solution) => solution.Calculate(Expression);
 }

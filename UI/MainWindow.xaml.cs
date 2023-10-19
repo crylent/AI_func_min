@@ -3,6 +3,8 @@ using System.Numerics;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AI_func_min.Algorithm;
+using AI_func_min.Algorithm.Genetic;
+using AI_func_min.Algorithm.ParticleSwarm;
 using AI_func_min.Expression;
 
 namespace AI_func_min.UI
@@ -22,7 +24,7 @@ namespace AI_func_min.UI
 
         private void FindMinimum(object? sender, EventArgs eventArgs)
         {
-            IOptimizationAlgorithm algorithm = Algorithms.SelectedIndex switch
+            IOptimizationWrapper algorithm = Algorithms.SelectedIndex switch
             {
                 0 => new FloatGeneticAlgorithm(_expression,
                     new FloatGeneticAlgorithm.Parameters
@@ -47,6 +49,16 @@ namespace AI_func_min.UI
                         Generations = ParseInt(Generations),
                         MutationStrength = ParseFloat(MutationStrength),
                         MutationCurve = ParseFloat(MutationCurve)
+                    }),
+                2 => new ParticleSwarmAlgorithm(_expression, 
+                    new ParticleSwarmAlgorithm.Parameters 
+                    {
+                        X1Min = ParseFloat(X1Min),
+                        X1Max = ParseFloat(X1Max),
+                        X2Min = ParseFloat(X2Min),
+                        X2Max = ParseFloat(X2Max),
+                        Population = ParseInt(Population),
+                        Generations = ParseInt(Generations)
                     }),
                 _ => null!
             };

@@ -1,7 +1,7 @@
 using System;
 using AI_func_min.Expression;
 
-namespace AI_func_min.Algorithm;
+namespace AI_func_min.Algorithm.Genetic;
 
 public class BinaryGeneticAlgorithm: GeneticAlgorithm<int>
 {

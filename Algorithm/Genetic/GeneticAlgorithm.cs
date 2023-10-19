@@ -4,22 +4,12 @@ using System.Linq;
 using System.Numerics;
 using AI_func_min.Expression;
 
-namespace AI_func_min.Algorithm;
+namespace AI_func_min.Algorithm.Genetic;
 
-public abstract class GeneticAlgorithm<T>: IOptimizationAlgorithm where T: INumber<T>
+public abstract class GeneticAlgorithm<T>: OptimizationAlgorithm<T> where T: INumber<T>
 {
-    private readonly IMathExpression _expression;
-
-    public class Parameters
+    public class Parameters: OptimizationParameters<T>
     {
-        public T X1Min = default!;
-        public T X1Max = default!;
-        public T X2Min = default!;
-        public T X2Max = default!;
-
-        public int Population = 50;
-        public int Generations = 2000;
-
         public float MutationStrength = 0.5f;
         public float MutationCurve = 3f;
     }
@@ -27,17 +17,16 @@ public abstract class GeneticAlgorithm<T>: IOptimizationAlgorithm where T: INumb
     protected readonly Parameters Params;
 
     private readonly Solution<T>[] _entities;
-    protected float Min;
     private Solution<T> _bestSolution = null!;
+    protected float Min;
 
-    protected GeneticAlgorithm(IMathExpression expression, Parameters @params)
+    protected GeneticAlgorithm(IMathExpression expression, Parameters @params): base(expression)
     {
-        _expression = expression;
         Params = @params;
         _entities = new Solution<T>[Params.Population];
     }
 
-    public Solution<float> Optimize()
+    public override Solution<float> Optimize()
     {
         CreateFirstGeneration();
         for (var g = 0; g < Params.Generations; g++)
@@ -100,9 +89,4 @@ public abstract class GeneticAlgorithm<T>: IOptimizationAlgorithm where T: INumb
         if (i == chances.Count) return i - 1;
         return i;
     }
-
-    protected abstract T RandomX1();
-    protected abstract T RandomX2();
-
-    private float Calculate(Solution<T> solution) => solution.Calculate(_expression);
 }

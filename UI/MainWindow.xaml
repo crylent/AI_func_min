@@ -13,8 +13,9 @@
         </ComboBox>
         
         <ComboBox x:Name="Algorithms" FontSize="15">
-            <ComboBoxItem Content="FloatGeneticAlgorithm" IsSelected="True" />
-            <ComboBoxItem Content="BinaryGeneticAlgorithm" />
+            <ComboBoxItem Content="Float Genetic Algorithm" IsSelected="True" />
+            <ComboBoxItem Content="Binary Genetic Algorithm" />
+            <ComboBoxItem Content="Particle Swarm Optimization" />
         </ComboBox>
         <Grid Margin="0,20">
             <Grid.RowDefinitions>
