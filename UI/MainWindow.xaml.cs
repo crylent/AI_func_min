@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Numerics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AI_func_min.Algorithm;
@@ -16,6 +16,7 @@ namespace AI_func_min.UI
     {
         private IMathExpression _expression = new ExpressionA();
 
+
         public MainWindow()
         {
             InitializeComponent();
@@ -24,7 +25,7 @@ namespace AI_func_min.UI
 
         private void FindMinimum(object? sender, EventArgs eventArgs)
         {
-            IOptimizationWrapper algorithm = Algorithms.SelectedIndex switch
+            IOptimizationWrapper optimizationAlgorithm = Algorithms.SelectedIndex switch
             {
                 0 => new FloatGeneticAlgorithm(_expression,
                     new FloatGeneticAlgorithm.Parameters
@@ -63,7 +64,7 @@ namespace AI_func_min.UI
                 _ => null!
             };
             Mouse.OverrideCursor = Cursors.Wait;
-            var result = algorithm.Optimize();
+            var result = optimizationAlgorithm.Optimize();
             Mouse.OverrideCursor = Cursors.Arrow;
             Result.Text = $"x₁ = {result.X1}\nx₂ = {result.X2}\nmin = {result.Calculate(_expression)}";
         }
@@ -104,5 +105,22 @@ namespace AI_func_min.UI
                 e.Handled = true;
             }
         }
+
+        private void OnAlgorithmSelected(object? sender, EventArgs e)
+        {
+            GeneticParams.Visibility = Visibility.Collapsed;
+            ParticleSwarmParams.Visibility = Visibility.Collapsed;
+            switch (Algorithms.SelectedIndex)
+            {
+                case 0: OnFloatGeneticSelected(); break;
+                case 1: OnBinaryGeneticSelected(); break;
+                case 2: OnParticleSwarmSelected(); break;
+            }
+        }
+        
+        private void OnParticleSwarmSelected() => ParticleSwarmParams.Visibility = Visibility.Visible;
+        private void OnBinaryGeneticSelected() => GeneticParams.Visibility = Visibility.Visible;
+        private void OnFloatGeneticSelected() => GeneticParams.Visibility = Visibility.Visible;
+        
     }
 }
